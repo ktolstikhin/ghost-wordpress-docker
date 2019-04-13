@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+  wordpress:
+    image: wordpress:latest
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - proxy
+      - backend
+    environment:
+      VIRTUAL_HOST: ${DOMAIN_NAME}
+      LETSENCRYPT_HOST: ${DOMAIN_NAME}
+      LETSENCRYPT_EMAIL: ${ADMIN_EMAIL}
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+
+  cron:
+    build:
+      context: ../cron
+    restart: always
+    depends_on:
+      - mysql
+    volumes:
+      - data:${DATA_PATH}/wordpress_data:ro
+      - backup:${DATA_PATH}/backup
+    environment:
+      DATA_PATH: ${DATA_PATH}
+
+volumes:
+  data:
+  backup:
+
+networks:
+  proxy:
+    external:
+  backend:
+

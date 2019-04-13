@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  ghost:
+    image: ghost:2-alpine
+    restart: always
+    volumes:
+      - data:/var/lib/ghost/content
+    networks:
+      - proxy
+    environment:
+      VIRTUAL_HOST: ${DOMAIN_NAME}
+      LETSENCRYPT_HOST: ${DOMAIN_NAME}
+      LETSENCRYPT_EMAIL: ${ADMIN_EMAIL}
+      NODE_ENV: production
+      url: https://${DOMAIN_NAME}
+
+  cron:
+    build:
+      context: ../cron
+    restart: always
+    depends_on:
+      - ghost
+    volumes:
+      - data:${DATA_PATH}/ghost_data:ro
+      - backup:${DATA_PATH}/backup
+    environment:
+      DATA_PATH: ${DATA_PATH}
+
+volumes:
+  data:
+  backup:
+
+networks:
+  proxy:
+    external:
+
