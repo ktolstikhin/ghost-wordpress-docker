@@ -16,8 +16,7 @@ services:
       url: https://${DOMAIN_NAME}
 
   cron:
-    build:
-      context: ../cron
+    build: ../cron
     restart: always
     depends_on:
       - ghost
@@ -33,5 +32,5 @@ volumes:
 
 networks:
   proxy:
-    external:
+    external: true
 
