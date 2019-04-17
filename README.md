@@ -38,5 +38,5 @@ In the `ghost` and `wordpress` folders, there is `.env` file with environment va
 
 ## Backup
 
-The `cron` container, which image is defined in `cron/Dockerfile`, is responsible for periodical backup of data stored in shared volumes. Note the mount points of all the shared data volumes must have suffix `_data` in their paths such as `${DATA_PATH}/ghost_data` in `ghost/docker-compose.yml` or `${DATA_PATH}/wordpress_data` in `wordpress/docker-compose.yml` files. This convention is used by the backup script `cron/bin/backup.sh` to filter out the data folders for a subsequent backup.
+The `cron` container, which image is defined in `cron/Dockerfile`, is responsible for periodical database backup using `mysqldump` utility. The backup is scheduled by cron to run every `@midnight` and `@weekly`.
 
