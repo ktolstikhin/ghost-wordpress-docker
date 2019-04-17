@@ -4,6 +4,8 @@ services:
   adminer:
     image: adminer
     restart: always
+    depends_on:
+      - mysql
     networks:
       - backend
     ports:
@@ -25,7 +27,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
   wordpress:
-    image: wordpress:latest
+    image: wordpress
     restart: always
     depends_on:
       - mysql

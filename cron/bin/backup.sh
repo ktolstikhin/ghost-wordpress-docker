@@ -14,7 +14,12 @@ fi
 archive=${BACKUP_PATH}/mysql_backup_${timestamp}.sql.gz
 echo "[INFO] Backup ${MYSQL_DATABASE} database to ${archive}"
 
-mysqldump -f -u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} ${MYSQL_DATABASE} | gzip > ${archive}
+mysqldump \
+    -f \
+    -u root \
+    -p${MYSQL_ROOT_PASSWORD} \
+    -h ${MYSQL_HOST} ${MYSQL_DATABASE} \
+    | gzip > ${archive}
 
 if [ $? -ne 0 ]; then
   echo "[ERROR] Backup failed!"
