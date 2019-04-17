@@ -9,8 +9,8 @@ services:
     networks:
       - backend
     environment:
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
@@ -27,20 +27,24 @@ services:
       LETSENCRYPT_HOST: ${DOMAIN_NAME}
       LETSENCRYPT_EMAIL: ${ADMIN_EMAIL}
       WORDPRESS_DB_HOST: mysql:3306
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
 
   cron:
     build: ../cron
     restart: always
+    volumes:
+      - backup:${BACKUP_PATH}
     depends_on:
       - mysql
-    volumes:
-      - data:${DATA_PATH}/wordpress_data:ro
-      - backup:${DATA_PATH}/backup
+    networks:
+      - backend
     environment:
-      DATA_PATH: ${DATA_PATH}
+      BACKUP_PATH: ${BACKUP_PATH}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: mysql
 
 volumes:
   data:

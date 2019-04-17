@@ -1,5 +1,7 @@
 FROM alpine:latest
 
+RUN apk add --no-cache gzip mysql-client
+
 COPY bin/*.sh /usr/local/bin/
 
 COPY crontab.txt .

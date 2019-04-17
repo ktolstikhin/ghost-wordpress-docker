@@ -1,30 +1,53 @@
 version: "3"
 
 services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
   ghost:
     image: ghost:2-alpine
     restart: always
-    volumes:
-      - data:/var/lib/ghost/content
+    depends_on:
+      - mysql
     networks:
       - proxy
+      - backend
     environment:
       VIRTUAL_HOST: ${DOMAIN_NAME}
       LETSENCRYPT_HOST: ${DOMAIN_NAME}
       LETSENCRYPT_EMAIL: ${ADMIN_EMAIL}
       NODE_ENV: production
       url: https://${DOMAIN_NAME}
+      database__client: mysql
+      database__connection__host: mysql
+      database__connection__user: ${MYSQL_USER}
+      database__connection__database: ${MYSQL_DATABASE}
+      database__connection__password: ${MYSQL_PASSWORD}
 
   cron:
     build: ../cron
     restart: always
-    depends_on:
-      - ghost
     volumes:
-      - data:${DATA_PATH}/ghost_data:ro
-      - backup:${DATA_PATH}/backup
+      - backup:${BACKUP_PATH}
+    depends_on:
+      - mysql
+    networks:
+      - backend
     environment:
-      DATA_PATH: ${DATA_PATH}
+      BACKUP_PATH: ${BACKUP_PATH}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: mysql
 
 volumes:
   data:
@@ -33,4 +56,5 @@ volumes:
 networks:
   proxy:
     external: true
+  backend:
 
