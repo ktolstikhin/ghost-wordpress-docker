@@ -16,7 +16,7 @@ This projects shows how to host Ghost and WordPress blogs side by side on the sa
 
 Spin up a target VPS and apply firewall settings using `bin/firewall.sh` script, if needed. Then, create a target machine using Docker Machine on the development host and connect the running shell to the new machine just created. You can now run Docker commands on the target host. First, you need to create a proxy network:
 ```bash
-$ cd proxy
+$ cd server/proxy
 $ ./bin/proxynet.sh
 ```
 which is equivalent to running this command:
@@ -27,9 +27,22 @@ Then, start the reverse proxy containers defined in `docker-compose.yml` file:
 ```bash
 $ docker-compose up -d
 ```
-Once the reverse proxy is up and running, you can finally start blog containers:
+The database management for both ghost and wordpress blogs is done using [Adminer](https://www.adminer.org/) which is running in a separate container. In order to start it, you have to create another one network first:
 ```bash
-$ cd ../ghost
+$ cd ../adminer
+$ ./bin/adminernet.sh
+```
+which is just the same as executing the following:
+```bash
+$ docker network create adminer
+```
+Then, start the adminer service:
+```bash
+$ docker-compose up -d
+```
+The adminer is listening 8080 port which is not exposed to the public address, use ssh tunneling to reach it. Once the reverse proxy is up and running, you can finally start blog containers:
+```bash
+$ cd ../../ghost
 $ docker-compose up -d
 $ cd ../wordpress
 $ docker-compose up -d

@@ -3,10 +3,12 @@ version: "3"
 services:
   mysql:
     image: mysql:5.7
+    container_name: wordpress_mysql
     restart: always
     volumes:
       - data:/var/lib/mysql
     networks:
+      - adminer
       - backend
     environment:
       MYSQL_USER: ${MYSQL_USER}
@@ -26,7 +28,7 @@ services:
       VIRTUAL_HOST: ${DOMAIN_NAME}
       LETSENCRYPT_HOST: ${DOMAIN_NAME}
       LETSENCRYPT_EMAIL: ${ADMIN_EMAIL}
-      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_HOST: wordpress_mysql:3306
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
@@ -44,13 +46,15 @@ services:
       BACKUP_PATH: ${BACKUP_PATH}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_HOST: mysql
+      MYSQL_HOST: wordpress_mysql
 
 volumes:
   data:
   backup:
 
 networks:
+  adminer:
+    external: true
   proxy:
     external: true
   backend:
