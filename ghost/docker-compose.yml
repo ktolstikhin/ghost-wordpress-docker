@@ -21,6 +21,8 @@ services:
     restart: always
     depends_on:
       - mysql
+    volumes:
+      - content:/var/lib/ghost/content
     networks:
       - proxy
       - backend
@@ -53,6 +55,7 @@ services:
 
 volumes:
   data:
+  content:
   backup:
 
 networks:
