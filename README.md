@@ -2,7 +2,7 @@
 
 ![](../assets/ghost_wordpress_docker.png?raw=true)
 
-This projects shows how to host Ghost and WordPress blogs side by side on the same server using Nginx reverse proxy, SSL encryption, and automated deployment with Docker Compose. The reverse proxy is responsible for routing incoming requests between blog containers and ensures automatic update of free SSL/TLS certificates provided by [Let's Encrypt](https://letsencrypt.org/) certificate authority. Actually, this setup is not limited to hosting just ghost and wordpress websites, but allows you to run any number of web applications alongside with no worries about routing, SSL, and everything.
+This project shows how to host Ghost and WordPress blogs side by side on the same server using Nginx reverse proxy, SSL encryption, and automated deployment with Docker Compose. The reverse proxy is responsible for routing incoming requests between blog containers and ensures automatic update of free SSL/TLS certificates provided by [Let's Encrypt](https://letsencrypt.org/) certificate authority. Actually, this setup is not limited to hosting just ghost and wordpress websites, but allows you to run any number of web applications alongside with no worries about routing, SSL, and everything.
 
 ## Requirements
 
